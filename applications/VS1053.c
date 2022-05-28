@@ -624,6 +624,7 @@ void vs10xx_test()
                 fliter++;
                 if(fliter>=5){
                     write(fp, recbuf, 512);
+                    
                     count++;
                 }
                 // write(fp, recbuf, 512);
