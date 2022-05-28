@@ -572,10 +572,11 @@ void recoder_enter_rec_mode(uint16_t agc)
 }
 
 
-void vs1053_record_stop(__WaveHeader pWav_Header)    //停止录音并且保存录音
+__WaveHeader vs1053_record_stop()    //停止录音并且保存录音
 {
+    __WaveHeader pWav_Header;
 	pWav_Header.riff.ChunkID=0x46464952;	//"RIFF"
-	pWav_Header.riff.ChunkSize=512*6+36;
+	pWav_Header.riff.ChunkSize=0;
 	pWav_Header.riff.Format=0x45564157; 	//"WAVE"
 	pWav_Header.fmt.ChunkID=0x20746D66; 	//"fmt "
 	pWav_Header.fmt.ChunkSize=16; 			//大小为16个字节
@@ -586,7 +587,8 @@ void vs1053_record_stop(__WaveHeader pWav_Header)    //停止录音并且保存�
  	pWav_Header.fmt.BlockAlign=2;			//块大小,2个字节为一个块
  	pWav_Header.fmt.BitsPerSample=16;		//16位PCM
     pWav_Header.data.ChunkID=0x61746164;	//"data"
- 	pWav_Header.data.ChunkSize=512*6;           //数据大小
+ 	pWav_Header.data.ChunkSize=0;           //数据大小
+    return pWav_Header;
 }
 
 void vs10xx_test()
@@ -596,6 +598,7 @@ void vs10xx_test()
 	uint16_t w;
     uint16_t idx;
     uint8_t count=0;
+    uint8_t fliter=0;
     int fp;
     fp = open("/abc.wav", O_WRONLY | O_CREAT | O_APPEND);
 //    recbuf = rt_malloc(512);
@@ -603,9 +606,9 @@ void vs10xx_test()
 	while(VS_RD_Reg(SPI_HDAT1)>>8)
 	w = VS_RD_Reg(SPI_HDAT1);
     if(fp){
-        vs1053_record_stop(wavheader);
-//        wavheader->riff.ChunkSize=512*6+32;
-//        wavheader->data.ChunkSize=512*6;
+        wavheader = vs1053_record_stop();
+        wavheader.riff.ChunkSize=512*20+36;
+        wavheader.data.ChunkSize=512*20;
         write(fp, &wavheader, sizeof(__WaveHeader));
         while(1){
             w=VS_RD_Reg(SPI_HDAT1);
@@ -618,10 +621,14 @@ void vs10xx_test()
                     recbuf[idx++] = w & 0XFF;
                     recbuf[idx++] = w >> 8;
                 }
-                write(fp, recbuf, 512);
+                fliter++;
+                if(fliter>=5){
+                    write(fp, recbuf, 512);
+                    count++;
+                }
+                // write(fp, recbuf, 512);
                 rt_memset(recbuf, 0, 512);
-                count++;
-                if(count>=6)
+                if(count>=20)
                 {
                     close(fp);
                     rt_kprintf("recoder over\n");
