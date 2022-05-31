@@ -14,13 +14,17 @@
 
 /* defined the LED0 pin: PC13 */
 #define LED0_PIN    GET_PIN(B, 6)
-extern void readwrite_sample(void);
+extern void sbtn_init();
+extern void vs10xx_test();
 int main(void)
 {
-    int count = 1;
     /* set LED0 pin mode to output */
     rt_pin_mode(LED0_PIN, PIN_MODE_OUTPUT);
-    while (count++)
+    sbtn_init();
+    set_date(2022, 5, 30);
+    set_time(12,47,00);
+//    vs10xx_test();
+    while (1)
     {
         rt_pin_write(LED0_PIN, PIN_HIGH);
         rt_thread_mdelay(500);

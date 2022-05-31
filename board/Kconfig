@@ -97,6 +97,15 @@ menu "On-chip Peripheral Drivers"
             config RT_USING_SPI_MSD
                 bool "Enable SPI MSD"
                 default n
+            config BSP_SPI2_TX_USING_DMA
+                bool "Enable SPI2 TX DMA"
+                depends on BSP_USING_SPI2
+                default n
+
+            config BSP_SPI2_RX_USING_DMA
+                bool "Enable SPI2 RX DMA"
+                depends on BSP_USING_SPI2
+                default n
         endif
 
     menuconfig BSP_USING_ADC

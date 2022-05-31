@@ -141,5 +141,5 @@ void VS_Set_All(void);
 
 void vs10xx_read_para(_vs10xx_obj * vs10xxdev);
 void vs10xx_save_para(_vs10xx_obj * vs10xxdev);
-
+void vs10xx_test();
 #endif /* VS1053_VS1053_H_ */

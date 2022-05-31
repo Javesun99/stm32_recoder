@@ -13,6 +13,7 @@
 
 #ifdef RT_USING_SERIAL
 #include "drv_usart.h"
+#include "SEGGER_RTT.h"
 #endif
 
 #ifdef RT_USING_FINSH
@@ -169,6 +170,7 @@ RT_WEAK void rt_hw_board_init()
 
     /* Set the shell console output device */
 #ifdef RT_USING_CONSOLE
+    rt_hw_jlink_rtt_init();
     rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
 #endif
 
