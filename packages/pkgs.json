@@ -1,0 +1,22 @@
+[
+ {
+  "path": "/packages/tools/SEGGER_RTT", 
+  "ver": "latest", 
+  "name": "SEGGER_RTT"
+ }, 
+ {
+  "path": "/packages/peripherals/agile_button", 
+  "ver": "v1.1.1", 
+  "name": "AGILE_BUTTON"
+ }, 
+ {
+  "path": "/packages/misc/samples/filesystem_samples", 
+  "ver": "latest", 
+  "name": "FILESYSTEM_SAMPLES"
+ }, 
+ {
+  "path": "/packages/misc/samples/peripheral_samples", 
+  "ver": "latest", 
+  "name": "PERIPHERAL_SAMPLES"
+ }
+]
