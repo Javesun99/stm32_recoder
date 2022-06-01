@@ -15,7 +15,7 @@
 #include "drv_usart.h"
 #include "SEGGER_RTT.h"
 #endif
-
+extern int rt_hw_jlink_rtt_init(void);
 #ifdef RT_USING_FINSH
 #include <finsh.h>
 static void reboot(uint8_t argc, char **argv)

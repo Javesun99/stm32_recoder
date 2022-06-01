@@ -40,11 +40,10 @@ uint8_t VS_SPI_ReadWriteByte(uint8_t data)
 //SD卡初始化的时候,需要低速
 void VS_SPI_SpeedLow(void)
 {
-    __HAL_SPI_DISABLE(&SPI1_Handler);
-    // SPI1_Handler.Instance->CR1 &= ~(0X7 << 28);
-    SPI1_Handler.Instance->CR1 &= 0xFFC7;
-    SPI1_Handler.Instance->CR1 |= SPI_BAUDRATEPRESCALER_256;
-    __HAL_SPI_ENABLE(&SPI1_Handler);
+    // __HAL_SPI_DISABLE(&SPI1_Handler);
+    // SPI1_Handler.Instance->CR1 &= 0xFFC7;
+    // SPI1_Handler.Instance->CR1 |= SPI_BAUDRATEPRESCALER_256;
+    // __HAL_SPI_ENABLE(&SPI1_Handler);
 }
 // void VS_SPI_SpeedLow(void)
 // {
@@ -56,11 +55,10 @@ void VS_SPI_SpeedLow(void)
 //SD卡正常工作的时候,可以高速了
 void VS_SPI_SpeedHigh(void)
 {
-    __HAL_SPI_DISABLE(&SPI1_Handler);
-    // SPI1_Handler.Instance->CR1 &= ~(0X7 << 28);
-    SPI1_Handler.Instance->CR1 &= 0xFFC7;
-    SPI1_Handler.Instance->CR1 |= SPI_BAUDRATEPRESCALER_64;
-    __HAL_SPI_ENABLE(&SPI1_Handler);
+    // __HAL_SPI_DISABLE(&SPI1_Handler);
+    // SPI1_Handler.Instance->CR1 &= 0xFFC7;
+    // SPI1_Handler.Instance->CR1 |= SPI_BAUDRATEPRESCALER_128;
+    // __HAL_SPI_ENABLE(&SPI1_Handler);
 }
 // void VS_SPI_SpeedHigh(void)
 // {
@@ -85,7 +83,7 @@ int VS_Init(void)
     SPI1_Handler.Init.CLKPolarity=SPI_POLARITY_HIGH;
     SPI1_Handler.Init.CLKPhase=SPI_PHASE_2EDGE;
     SPI1_Handler.Init.NSS=SPI_NSS_SOFT;
-    SPI1_Handler.Init.BaudRatePrescaler=SPI_BAUDRATEPRESCALER_256;//256
+    SPI1_Handler.Init.BaudRatePrescaler=SPI_BAUDRATEPRESCALER_64;//256
     SPI1_Handler.Init.FirstBit=SPI_FIRSTBIT_MSB;
     SPI1_Handler.Init.TIMode=SPI_TIMODE_DISABLE;
     SPI1_Handler.Init.CRCCalculation=SPI_CRCCALCULATION_DISABLE;
@@ -616,17 +614,16 @@ void vs10xx_test()
 	uint16_t w;
     uint16_t idx;
     uint8_t count=0;
-    uint8_t fliter=0;
     uint8_t wavname[20];
     int fp;
     rt_pin_mode(LED1_PIN,PIN_MODE_OUTPUT);
+    rt_pin_write(LED1_PIN, PIN_HIGH);
     now = time(RT_NULL);
     rt_sprintf(wavname,"%d.wav",now);
     fp = open(wavname, O_WRONLY | O_CREAT );
 //    recbuf = rt_malloc(512);
     recoder_enter_rec_mode(1024*4);
-	while(VS_RD_Reg(SPI_HDAT1)>>8)
-	w = VS_RD_Reg(SPI_HDAT1);
+	while(VS_RD_Reg(SPI_HDAT1)>>8);
     if(fp){
         wavheader = vs1053_record_stop();
         wavheader.riff.ChunkSize=512*200+36;
@@ -643,12 +640,8 @@ void vs10xx_test()
                     recbuf[idx++] = w & 0XFF;
                     recbuf[idx++] = w >> 8;
                 }
-                fliter++;
-                if(fliter>=5){
-                    write(fp, recbuf, 512);
-                    count++;
-                }
-                // write(fp, recbuf, 512);
+                write(fp, recbuf, 512);
+                count++;
                 rt_memset(recbuf, 0, 512);
                 if(count>=200)
                 {
